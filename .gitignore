@@ -1,0 +1,6 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea/
+PT.xcodeproj/project.xcworkspace/xcuserdata/
+PT.xcworkspace/
+Podfile.lock
+Pods/
