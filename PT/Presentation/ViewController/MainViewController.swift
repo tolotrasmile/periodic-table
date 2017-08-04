@@ -5,7 +5,7 @@
 
 import UIKit
 
-class MainViewController: UIViewController {
+class MainViewController: GenericViewController {
 
     @IBOutlet weak var rowsView: UIScrollView!
     @IBOutlet weak var columnsView: UIScrollView!
@@ -20,15 +20,20 @@ class MainViewController: UIViewController {
     let maxRow: Int = 10
     let maxColumn: Int = 18
     let inset: CGFloat = 0.0
-    var size: CGFloat = 0
+    var size: CGFloat = 100.0
+    var part: CGFloat = 3
 
     override func viewDidLoad() {
-
         super.viewDidLoad()
-        self.elements = ElementItem.items()
 
-        self.size = self.scrollView.frame.width / 3
+        self.size = elementSize()
+
         self.layoutIndicators()
+        self.elements = ElementItem.items()
+    }
+
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
     }
 
     override func didReceiveMemoryWarning() {
@@ -38,7 +43,7 @@ class MainViewController: UIViewController {
 
     func layout() {
 
-        self.size = self.scrollView.frame.width / 3
+        self.size = elementSize()
 
         for subview in self.scrollView.subviews {
             subview.removeFromSuperview()
@@ -47,11 +52,13 @@ class MainViewController: UIViewController {
         for item in self.elements {
             let frame = self.frameForItem(item)
             let tile = ElementView(frame: CGRectInset(frame, inset, inset))
+            tile.delegate = self
             tile.element = item
             scrollView.addSubview(tile)
         }
 
         self.scrollView.contentSize = CGSize(width: CGFloat(size) * ElementItem.maxPoint().x, height: (CGFloat(size) * ElementItem.maxPoint().y))
+        self.scrollView.directionalLockEnabled = true
 
     }
 
@@ -89,9 +96,8 @@ class MainViewController: UIViewController {
         return CGRect(x: CGFloat(item.x! - 1) * size, y: (CGFloat(item.y! - 1) * size), width: size, height: size)
     }
 
-    // Remove first scrollview top inset
-    override func prefersStatusBarHidden() -> Bool {
-        return true
+    func elementSize() -> CGFloat {
+        return self.scrollView.frame.width / 8
     }
 
 }
@@ -118,6 +124,15 @@ extension MainViewController: UIScrollViewDelegate {
             }
         }
 
+    }
+
+}
+
+extension MainViewController: ElementViewDelegate {
+
+    func clickElement(element: ElementItem?) {
+        let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("ElementViewController") as! ElementViewController
+        self.showPopup(controller, animated: true, completion: nil)
     }
 
 }

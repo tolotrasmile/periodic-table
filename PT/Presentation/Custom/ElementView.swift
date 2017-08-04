@@ -8,7 +8,13 @@
 
 import UIKit
 
-@IBDesignable class ElementView: UIView {
+protocol ElementViewDelegate {
+    func clickElement(element: ElementItem?)
+}
+
+@IBDesignable class ElementView: ReuseableXibView {
+
+    var delegate: ElementViewDelegate?
 
     @IBOutlet var contentView: UIView!
     @IBOutlet weak var labelNumber: UILabel!
@@ -16,43 +22,41 @@ import UIKit
     @IBOutlet weak var labelName: UILabel!
 
     var element: ElementItem? {
-
         didSet {
-
             if nil != element {
                 self.labelName.text = element!.name
                 self.labelNumber.text = String(element!.number!)
                 self.labelSymbol.text = element!.symbol
                 self.contentView.backgroundColor = element!.color()
             }
-
         }
     }
 
-
-    var view: UIView!
-
     override init(frame: CGRect) {
         super.init(frame: frame)
-        xibSetup()
+        let tap = UILongPressGestureRecognizer(target: self, action: #selector(tapHandler))
+        tap.minimumPressDuration = 0
+        self.addGestureRecognizer(tap)
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 
-    func xibSetup() {
-        view = loadViewFromNib()
-        view.frame = bounds
-        view.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
-        addSubview(view)
-    }
 
-    func loadViewFromNib() -> UIView {
-        let bundle = NSBundle(forClass: self.dynamicType)
-        let nib = UINib(nibName: "ElementView", bundle: bundle)
-        let view = nib.instantiateWithOwner(self, options: nil)[0] as! UIView
-        return view
+    // called by gesture recognizer
+    func tapHandler(gesture: UITapGestureRecognizer) {
+
+        switch gesture.state {
+        case .Began:
+            self.highlight()
+            self.makeViewShine()
+            break
+        case .Ended:self.activate()
+            break
+        default:
+            break
+        }
     }
 
     func highlight() {
@@ -70,20 +74,29 @@ import UIKit
             self.labelName.textColor = UIColor.whiteColor()
             self.labelNumber.textColor = UIColor.whiteColor()
             self.contentView.backgroundColor = self.element!.color()
+            self.layer.shadowRadius = 0.0
+            self.transform = CGAffineTransformMakeScale(1.0, 1.0)
         }
     }
 
-    @IBAction func touchDown(sender: AnyObject) {
-        self.highlight()
-        let button = sender as! UIButton
-        print(button.superview!.superview!.frame)
-    }
+    func makeViewShine() {
 
-    @IBAction func touchCancel(sender: AnyObject) {
-        print("touchCancel")
-    }
+        self.layer.shadowColor = UIColor.whiteColor().CGColor
+        self.layer.shadowRadius = 10.0
+        self.layer.shadowOpacity = 1.0
+        self.layer.shadowOffset = .zero
+        self.layer.masksToBounds = false
 
-    @IBAction func touchUpOutside(sender: AnyObject) {
-        print("touchUpOutside")
+        UIView.animateWithDuration(0.7, delay: 0, options: [.CurveEaseInOut, .AllowUserInteraction],
+                animations: { () -> Void in
+                    self.transform = CGAffineTransformMakeScale(0.9, 0.9)
+                },
+                completion: { b in
+                    self.activate()
+                    if self.delegate != nil {
+                        self.delegate!.clickElement(self.element)
+                    }
+                }
+        )
     }
 }

@@ -9,6 +9,7 @@ target 'PT' do
 
   pod 'Gloss'
   pod 'ObjectMapper'
+  pod 'RealmSwift'
 
   target 'PTTests' do
     inherit! :search_paths
