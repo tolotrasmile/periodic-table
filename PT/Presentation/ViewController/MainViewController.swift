@@ -19,15 +19,15 @@ class MainViewController: UIViewController {
 
     let maxRow: Int = 10
     let maxColumn: Int = 18
-    var size: CGFloat = 100
+    let inset: CGFloat = 0.0
+    var size: CGFloat = 0
 
     override func viewDidLoad() {
 
         super.viewDidLoad()
-
-        self.size = self.scrollView.frame.width / 3
         self.elements = ElementItem.items()
 
+        self.size = self.scrollView.frame.width / 3
         self.layoutIndicators()
     }
 
@@ -38,19 +38,20 @@ class MainViewController: UIViewController {
 
     func layout() {
 
+        self.size = self.scrollView.frame.width / 3
+
         for subview in self.scrollView.subviews {
             subview.removeFromSuperview()
         }
 
         for item in self.elements {
             let frame = self.frameForItem(item)
-            let tile = ElementView(frame: CGRectInset(frame, 0.0, 0.0))
+            let tile = ElementView(frame: CGRectInset(frame, inset, inset))
             tile.element = item
             scrollView.addSubview(tile)
         }
 
         self.scrollView.contentSize = CGSize(width: CGFloat(size) * ElementItem.maxPoint().x, height: (CGFloat(size) * ElementItem.maxPoint().y))
-        self.scrollView.contentOffset = CGPoint(x: 0, y: -20)
 
     }
 
@@ -58,9 +59,16 @@ class MainViewController: UIViewController {
 
         // rows
         for i in 0..<maxRow {
+
+            if i + 1 == 8 {
+                continue
+            }
+
+            let text = i + 1 > 7 ? String(i) : String(i + 1)
             let frame = CGRect(x: 0, y: CGFloat(i) * size, width: rowsView.frame.width, height: size)
-            let row = MarkView(frame: CGRectInset(frame, 1.0, 1.0))
-            row.label.text = String(i + 1)
+
+            let row = MarkView(frame: CGRectInset(frame, inset, inset))
+            row.label.text = text
             rowsView.addSubview(row)
         }
 
@@ -69,7 +77,7 @@ class MainViewController: UIViewController {
         // Columns
         for i in 0..<maxColumn {
             let frame = CGRect(x: CGFloat(i) * size, y: 0, width: size, height: columnsView.frame.height)
-            let col = MarkView(frame: CGRectInset(frame, 1.0, 1.0))
+            let col = MarkView(frame: CGRectInset(frame, inset, inset))
             col.label.text = String(i + 1)
             columnsView.addSubview(col)
         }
@@ -81,12 +89,16 @@ class MainViewController: UIViewController {
         return CGRect(x: CGFloat(item.x! - 1) * size, y: (CGFloat(item.y! - 1) * size), width: size, height: size)
     }
 
+    // Remove first scrollview top inset
+    override func prefersStatusBarHidden() -> Bool {
+        return true
+    }
 
 }
 
 extension MainViewController: UIScrollViewDelegate {
 
-    public func scrollViewDidScroll(scrollView: UIScrollView) {
+    func scrollViewDidScroll(scrollView: UIScrollView) {
         UIView.animateWithDuration(0.1) {
 
             if (scrollView == self.scrollView) {

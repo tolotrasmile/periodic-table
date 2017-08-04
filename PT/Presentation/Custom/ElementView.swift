@@ -75,6 +75,8 @@ import UIKit
 
     @IBAction func touchDown(sender: AnyObject) {
         self.highlight()
+        let button = sender as! UIButton
+        print(button.superview!.superview!.frame)
     }
 
     @IBAction func touchCancel(sender: AnyObject) {
