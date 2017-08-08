@@ -132,7 +132,7 @@ extension MainViewController: ElementViewDelegate {
 
     func clickElement(element: ElementItem?) {
         let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("ElementViewController") as! ElementViewController
-        self.showPopup(controller, animated: true, completion: nil)
+        self.showPopup(controller, animated: false, completion: nil)
     }
 
 }

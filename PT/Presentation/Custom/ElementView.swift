@@ -43,7 +43,6 @@ protocol ElementViewDelegate {
         super.init(coder: aDecoder)
     }
 
-
     // called by gesture recognizer
     func tapHandler(gesture: UITapGestureRecognizer) {
 
@@ -88,15 +87,15 @@ protocol ElementViewDelegate {
         self.layer.masksToBounds = false
 
         UIView.animateWithDuration(0.7, delay: 0, options: [.CurveEaseInOut, .AllowUserInteraction],
-                animations: { () -> Void in
-                    self.transform = CGAffineTransformMakeScale(0.9, 0.9)
-                },
-                completion: { b in
-                    self.activate()
-                    if self.delegate != nil {
-                        self.delegate!.clickElement(self.element)
-                    }
+            animations: { () -> Void in
+                self.transform = CGAffineTransformMakeScale(0.9, 0.9)
+            },
+            completion: { b in
+                self.activate()
+                if self.delegate != nil {
+                    self.delegate!.clickElement(self.element)
                 }
+            }
         )
     }
 }

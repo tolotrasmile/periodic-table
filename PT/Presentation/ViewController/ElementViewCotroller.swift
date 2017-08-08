@@ -9,6 +9,8 @@ class ElementViewController: GenericViewController {
 
     @IBOutlet weak var scrollerHeight: NSLayoutConstraint!
     @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var contentView: UIView!
+    @IBOutlet weak var elementDetailView: UIView!
 
     var currentElement: ElementItem?
 
@@ -20,11 +22,49 @@ class ElementViewController: GenericViewController {
 
     override func viewDidLoad() {
         self.scrollerHeight.constant = self.scrollView.frame.width / 3
-        self.elements = ElementItem.items()
+
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.elements = ElementItem.items()
+        })
+
+        let detail = ElementDetailView(frame: CGRect(x: 0, y: 0, width: self.elementDetailView.frame.width, height: self.elementDetailView.frame.height))
+        self.elementDetailView.addSubview(detail)
+
+        self.scrollView.transform = CGAffineTransformMakeScale(0.0, 0.0)
+        self.contentView.transform = CGAffineTransformMakeScale(0.0, 0.0)
+    }
+
+    override func viewWillAppear(animated: Bool) {
+
+        UIView.animateWithDuration(0.4) {
+            self.contentView.transform = CGAffineTransformIdentity
+        }
+
+        UIView.animateWithDuration(0.4, delay: 0.4, options: [],
+            animations: {
+                self.scrollView.transform = CGAffineTransformIdentity
+            },
+            completion: nil
+        )
     }
 
     @IBAction func dismiss(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.view.layoutIfNeeded() // call it also here to finish pending layout operations
+
+        UIView.animateWithDuration(0.4) {
+            self.scrollView.transform = CGAffineTransformMakeScale(0.0, 0.0)
+        }
+
+        UIView.animateWithDuration(0.4, delay: 0.4, options: [.BeginFromCurrentState, .AllowUserInteraction],
+            animations: {
+                self.contentView.transform = CGAffineTransformMakeScale(0.0, 0.0)
+            },
+            completion: { completion in
+                if completion {
+                    self.dismissViewControllerAnimated(false, completion: nil)
+                }
+            }
+        )
     }
 
     func layout() {
@@ -42,7 +82,7 @@ class ElementViewController: GenericViewController {
             tile.element = elements[i]
 
             if i == 0 {
-                tile.activate()
+                tile.highlight()
             }
 
             scrollView.addSubview(tile)
