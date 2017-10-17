@@ -7,9 +7,10 @@ target 'PT' do
 
   # Pods for PT
 
-  pod 'Gloss'
-  pod 'ObjectMapper'
-  pod 'RealmSwift'
+  pod 'Gloss', '0.7.3'
+  pod 'ObjectMapper', '1.3.0'
+  pod 'RealmSwift', '1.0.1'
+  pod 'IGListKit'
 
   target 'PTTests' do
     inherit! :search_paths

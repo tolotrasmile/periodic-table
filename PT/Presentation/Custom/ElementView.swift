@@ -45,7 +45,6 @@ protocol ElementViewDelegate {
 
     // called by gesture recognizer
     func tapHandler(gesture: UITapGestureRecognizer) {
-
         switch gesture.state {
         case .Began:
             self.highlight()

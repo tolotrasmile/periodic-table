@@ -100,6 +100,10 @@ class MainViewController: GenericViewController {
         return self.scrollView.frame.width / 8
     }
 
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+
+    }
+
 }
 
 extension MainViewController: UIScrollViewDelegate {
@@ -131,8 +135,8 @@ extension MainViewController: UIScrollViewDelegate {
 extension MainViewController: ElementViewDelegate {
 
     func clickElement(element: ElementItem?) {
-        let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("ElementViewController") as! ElementViewController
-        self.showPopup(controller, animated: false, completion: nil)
+        //let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("ElementViewController") as! ElementViewController
+        self.performSegueWithIdentifier("showDetails", sender: self)
     }
 
 }

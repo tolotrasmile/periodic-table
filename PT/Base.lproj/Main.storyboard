@@ -292,11 +292,12 @@
                         <outlet property="columnsView" destination="hh4-Hw-wau" id="Mhy-fR-C4C"/>
                         <outlet property="rowsView" destination="ehT-d4-Tz7" id="mf0-h5-CcQ"/>
                         <outlet property="scrollView" destination="RsH-8N-E7z" id="UfF-22-aB3"/>
+                        <segue destination="Nv7-AO-GZP" kind="push" identifier="showDetails" splitViewControllerTargetIndex="1" id="iD5-Na-QJr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CeK-KZ-hni" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="318" y="420"/>
+            <point key="canvasLocation" x="364" y="420"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="1MI-7a-Zzu">
